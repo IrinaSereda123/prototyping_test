@@ -1,0 +1,172 @@
+<title>Вводный тест по прототипированию</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600&display=swap">
+<style>
+/* Одна колонка 46rem, липкая полоса прогресса, вопросы карточками, итог в процентах */
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --fg:#17211f; --muted:#56635f; --line:#d3dbd8;
+  --accent:#0f766e; --accent-soft:#d9efec; --accent-ink:#ffffff;
+  --ok:#17803d; --ok-soft:#dcf3e3; --bad:#b42318; --bad-soft:#fbe0dd;
+  --head:'Merriweather',Georgia,'Times New Roman',serif;
+  --body:'Open Sans','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121816; --surface:#1b2321; --fg:#e8eeec; --muted:#9fb0ab; --line:#33403c;
+  --accent:#4fd1c5; --accent-soft:#17403b; --accent-ink:#06201c;
+  --ok:#5fcf86; --ok-soft:#1b3a28; --bad:#ff8a7f; --bad-soft:#442320; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121816; --surface:#1b2321; --fg:#e8eeec; --muted:#9fb0ab; --line:#33403c;
+  --accent:#4fd1c5; --accent-soft:#17403b; --accent-ink:#06201c;
+  --ok:#5fcf86; --ok-soft:#1b3a28; --bad:#ff8a7f; --bad-soft:#442320; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 3rem}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.wrap{max-width:46rem;margin:0 auto}
+header.top{padding-top:2rem}
+h1{font-family:var(--head);font-size:clamp(1.5rem,4.5vw,2rem);line-height:1.25;margin:0 0 .5rem;text-wrap:balance}
+.lead{margin:0;color:var(--muted)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:.9rem 0 .7rem;margin-top:1rem}
+.bar-row{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-size:.95rem;font-variant-numeric:tabular-nums}
+.bar-row b{font-weight:600}
+.track{height:.5rem;background:var(--line);border-radius:99px;overflow:hidden;margin-top:.5rem}
+.fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+ol.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:.6rem;padding:1.1rem 1.2rem 1.2rem;scroll-margin-top:6rem}
+.qn{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 .25rem;font-weight:600}
+.qt{font-family:var(--head);font-size:1.12rem;line-height:1.4;margin:0 0 .9rem;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:.5rem}
+.opt{display:flex;gap:.75rem;align-items:flex-start;text-align:left;width:100%;font:inherit;color:inherit;background:var(--bg);
+  border:1.5px solid var(--line);border-radius:.5rem;padding:.65rem .8rem;cursor:pointer;min-width:0}
+.opt:hover:not([aria-disabled="true"]){border-color:var(--accent);background:var(--accent-soft)}
+.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.opt[aria-disabled="true"]{cursor:default}
+.ltr{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:600;font-size:.9rem;background:var(--surface)}
+.txt{min-width:0;overflow-wrap:anywhere;padding-top:.1rem}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ok .ltr{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt.bad .ltr{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.fb{margin:.8rem 0 0;font-weight:600;min-height:1.5em}
+.fb.ok{color:var(--ok)} .fb.bad{color:var(--bad)}
+.result{margin-top:1.5rem;background:var(--surface);border:1px solid var(--line);border-radius:.6rem;padding:1.4rem 1.2rem;scroll-margin-top:6rem}
+.result h2{font-family:var(--head);font-size:1.3rem;margin:0 0 .4rem}
+.score{font-size:2.8rem;font-weight:600;font-variant-numeric:tabular-nums;margin:.2rem 0}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
+.chip{min-width:2.4rem;text-align:center;padding:.25rem .4rem;border-radius:.4rem;font-size:.9rem;font-weight:600;text-decoration:none;font-variant-numeric:tabular-nums;border:1.5px solid}
+.chip.ok{color:var(--ok);background:var(--ok-soft);border-color:var(--ok)}
+.chip.bad{color:var(--bad);background:var(--bad-soft);border-color:var(--bad)}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-ink);border:0;border-radius:.5rem;padding:.7rem 1.2rem;cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hint{color:var(--muted);font-size:.9rem;margin:1rem 0 0}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Вводный тест по дисциплине «Прототипирование»</h1>
+    <p class="lead">20 вопросов, у каждого один верный ответ. Каждый верный ответ даёт 5 %, итог оценивается от 0 до 100 %. После выбора ответа сразу видно, верно ли он выбран, а при ошибке показан правильный вариант. Изменить ответ нельзя.</p>
+    <div class="bar">
+      <div class="bar-row" aria-live="polite"><span>Отвечено <b id="done">0</b> из <b id="total">20</b></span><span>Результат: <b id="pct">0</b> %</span></div>
+      <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+    </div>
+  </header>
+  <main>
+    <ol class="list" id="list"></ol>
+    <section class="result" id="result" hidden aria-live="polite">
+      <h2>Тест завершён</h2>
+      <p class="score" id="score"></p>
+      <p id="grade" style="margin:0;font-size:1.1rem;font-weight:600"></p>
+      <p id="level" style="margin:.3rem 0 0;color:var(--muted)"></p>
+      <div class="chips" id="chips"></div>
+      <button class="btn" id="again" type="button">Пройти заново</button>
+      <p class="hint">Номер вопроса в списке выше ведёт к нему. Красным отмечены вопросы с ошибкой.</p>
+    </section>
+  </main>
+</div>
+
+<script>
+const Q = [{"n": 1, "q": "Что такое прототип?", "o": ["Готовое изделие, выпущенное серией", "Предварительная модель или образец для проверки идеи и формы до окончательной реализации", "Чертёж без размеров", "Инструкция по эксплуатации"], "a": 1}, {"n": 2, "q": "Какова главная цель прототипирования?", "o": ["Сразу получить финальный продукт", "Отказаться от тестирования", "Выявить ошибки и проверить идеи на раннем этапе, пока исправления недороги", "Увеличить число деталей в изделии"], "a": 2}, {"n": 3, "q": "Что из перечисленного является прототипом с низкой детализацией?", "o": ["Бумажный набросок или схема экранов", "Готовое приложение в магазине", "Серийная металлическая деталь", "Финальная 3D-модель с текстурами и освещением"], "a": 0}, {"n": 4, "q": "Что означает «быстрое прототипирование» (rapid prototyping)?", "o": ["Быстрое чтение чертежей", "Ускоренная доставка материалов", "Сокращение числа участников проекта", "Ускоренное изготовление образца по цифровой модели"], "a": 3}, {"n": 5, "q": "Что означает метод печати FDM?", "o": ["Отверждение жидкой смолы светом", "Печать расплавленным пластиковым прутком, который выкладывается слой за слоем", "Спекание порошка лазером", "Литьё материала в готовую форму"], "a": 1}, {"n": 6, "q": "Какой материал чаще всего используют для первых учебных отпечатков на FDM-принтере?", "o": ["Титан", "Стекло", "PLA (полилактид)", "Бетон"], "a": 2}, {"n": 7, "q": "Какая технология печати использует жидкую светочувствительную смолу?", "o": ["FDM", "Фрезерование", "Литьё под давлением", "SLA / DLP"], "a": 3}, {"n": 8, "q": "Что такое аддитивные технологии?", "o": ["Послойное построение изделия путём добавления материала", "Удаление материала из заготовки резцом", "Штамповка из листа", "Сварка готовых деталей"], "a": 0}, {"n": 9, "q": "Из чего состоит полигональная 3D-модель?", "o": ["Только из пикселей", "Только из текстовых команд", "Из вершин, рёбер и граней (полигонов)", "Из набора звуковых дорожек"], "a": 2}, {"n": 10, "q": "Сколько осей в трёхмерной декартовой системе координат?", "o": ["Две: X и Y", "Три: X, Y и Z", "Четыре", "Одна"], "a": 1}, {"n": 11, "q": "Что такое модификатор в 3ds Max?", "o": ["Тип файла для сохранения сцены", "Материал поверхности", "Устройство для печати", "Операция, которая изменяет форму объекта и хранится в стеке, не разрушая исходных параметров"], "a": 3}, {"n": 12, "q": "Для чего в первую очередь используется 3ds Max?", "o": ["Для создания 3D-моделей, визуализации и анимации", "Для ведения бухгалтерского учёта", "Для настройки компьютерных сетей", "Для набора текстовых документов"], "a": 0}, {"n": 13, "q": "Какой формат файла чаще всего передают в программу-слайсер для 3D-печати?", "o": ["MP3", "DOCX", "STL", "XLSX"], "a": 2}, {"n": 14, "q": "Для чего используется Unity?", "o": ["Это слайсер для подготовки модели к печати", "Это игровой движок для создания интерактивных 2D- и 3D-приложений, симуляций, AR/VR и игр", "Это система контроля версий", "Это принтер для печати смолой"], "a": 1}, {"n": 15, "q": "Почему важно проверять единицы измерения модели перед экспортом?", "o": ["От единиц зависит цвет модели", "От единиц зависит имя файла", "Единицы не влияют на результат", "Из-за ошибки единиц изделие может получиться в десятки или сотни раз больше или меньше задуманного"], "a": 3}, {"n": 16, "q": "Какой из материалов является гибким?", "o": ["PLA", "Нержавеющая сталь", "TPU", "Керамика"], "a": 2}, {"n": 17, "q": "В чём преимущество прототипа перед описанием идеи на словах?", "o": ["Идею можно увидеть и испытать, а замечания получить до больших затрат", "Прототип всегда дешевле любого описания", "Прототип отменяет проектирование", "Прототип заменяет технику безопасности"], "a": 0}, {"n": 18, "q": "Какова разумная роль искусственного интеллекта при создании прототипов?", "o": ["Полностью заменять проверку и испытания", "Помогать с идеями, эскизами и вариантами, а результат проверяет специалист", "Работать только как драйвер принтера", "Не применяться ни на одном этапе проектирования"], "a": 1}, {"n": 19, "q": "Что нужно сделать с 3D-моделью, полученной с помощью ИИ, перед печатью?", "o": ["Ничего: такая модель всегда готова к печати", "Достаточно оценить цвет", "Проверка не нужна, если картинка выглядит красиво", "Проверить замкнутость, толщину стенок, масштаб и пригодность к печати"], "a": 3}, {"n": 20, "q": "Чем CAD-системы (САПР) для инженерных деталей отличаются от полигональных редакторов вроде 3ds Max?", "o": ["CAD строит точные модели с заданными размерами и параметрами для изготовления, а полигональный редактор работает с сеткой и ориентирован на визуализацию и анимацию", "Принципиальных различий нет, программы полностью взаимозаменяемы", "Полигональные редакторы точнее CAD по размерам", "CAD предназначен только для работы со звуком"], "a": 0}];
+const LET = ['А','Б','В','Г'];
+const list = document.getElementById('list');
+const st = Q.map(() => null);
+const STEP = 100 / Q.length;
+
+function build(){
+  list.innerHTML = '';
+  Q.forEach((q, qi) => {
+    const li = document.createElement('li');
+    li.className = 'card'; li.id = 'q' + q.n;
+    const opts = q.o.map((t, oi) =>
+      `<button type="button" class="opt" id="q${q.n}-o${oi}" data-q="${qi}" data-o="${oi}">
+         <span class="ltr" aria-hidden="true">${LET[oi]}</span><span class="txt"></span></button>`).join('');
+    li.innerHTML = `<p class="qn">Вопрос ${q.n} из ${Q.length}</p><h2 class="qt"></h2>
+      <div class="opts" role="group" aria-labelledby="q${q.n}-t">${opts}</div>
+      <p class="fb" id="q${q.n}-fb" role="status"></p>`;
+    li.querySelector('.qt').id = 'q' + q.n + '-t';
+    li.querySelector('.qt').textContent = q.q;
+    li.querySelectorAll('.txt').forEach((el, oi) => el.textContent = q.o[oi]);
+    list.appendChild(li);
+  });
+  update();
+}
+
+function pick(qi, oi){
+  if (st[qi] !== null) return;
+  st[qi] = oi;
+  const q = Q[qi], good = oi === q.a;
+  q.o.forEach((_, i) => document.getElementById(`q${q.n}-o${i}`).setAttribute('aria-disabled', 'true'));
+  const chosen = document.getElementById(`q${q.n}-o${oi}`);
+  chosen.classList.add(good ? 'ok' : 'bad');
+  chosen.querySelector('.ltr').textContent = good ? '✓' : '✕';
+  if (!good){ const c = document.getElementById(`q${q.n}-o${q.a}`); c.classList.add('ok'); c.querySelector('.ltr').textContent = '✓'; }
+  const fb = document.getElementById(`q${q.n}-fb`);
+  fb.className = 'fb ' + (good ? 'ok' : 'bad');
+  fb.textContent = good ? 'Верно' : 'Неверно. Правильный ответ: ' + LET[q.a];
+  update();
+}
+
+function level(p){
+  if (p >= 90) return 'Отличная подготовка: основы уже знакомы.';
+  if (p >= 70) return 'Хорошая подготовка: есть отдельные пробелы.';
+  if (p >= 50) return 'Базовый уровень: на курсе стоит уделить внимание основам.';
+  return 'Начальный уровень: курс поможет освоить тему с нуля.';
+}
+
+function update(){
+  const done = st.filter(v => v !== null).length;
+  const right = st.filter((v, i) => v === Q[i].a).length;
+  const p = Math.round(right * STEP);
+  document.getElementById('done').textContent = done;
+  document.getElementById('total').textContent = Q.length;
+  document.getElementById('pct').textContent = p;
+  document.getElementById('fill').style.width = (done / Q.length * 100) + '%';
+  const res = document.getElementById('result');
+  if (done === Q.length){
+    document.getElementById('score').textContent = p + ' %';
+    document.getElementById('grade').textContent = 'Верных ответов: ' + right + ' из ' + Q.length + ', ошибок: ' + (Q.length - right);
+    document.getElementById('level').textContent = level(p);
+    document.getElementById('chips').innerHTML = Q.map((q, i) =>
+      `<a class="chip ${st[i] === q.a ? 'ok' : 'bad'}" href="#q${q.n}" data-jump="${q.n}">${q.n}</a>`).join('');
+    const first = res.hidden;
+    res.hidden = false;
+    if (first) setTimeout(() => res.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth', block:'start'}), 600);
+  } else { res.hidden = true; }
+}
+
+list.addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b) return;
+  pick(+b.dataset.q, +b.dataset.o);
+});
+document.getElementById('chips').addEventListener('click', e => {
+  const a = e.target.closest('[data-jump]'); if (!a) return;
+  e.preventDefault();
+  document.getElementById('q' + a.dataset.jump).scrollIntoView({block:'start'});
+});
+document.getElementById('again').addEventListener('click', () => {
+  st.fill(null); build(); window.scrollTo(0, 0);
+});
+build();
+</script>
