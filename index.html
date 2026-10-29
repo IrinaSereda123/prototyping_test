@@ -1,5 +1,9 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Вводный тест по прототипированию</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600&display=swap">
@@ -20,7 +24,9 @@
   --bg:#121816; --surface:#1b2321; --fg:#e8eeec; --muted:#9fb0ab; --line:#33403c;
   --accent:#4fd1c5; --accent-soft:#17403b; --accent-ink:#06201c;
   --ok:#5fcf86; --ok-soft:#1b3a28; --bad:#ff8a7f; --bad-soft:#442320; color-scheme:dark}
+html{-webkit-text-size-adjust:100%}
 *{box-sizing:border-box}
+body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 3rem}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
@@ -64,6 +70,8 @@ ol.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;ga
 @media (prefers-reduced-motion:reduce){.fill{transition:none}}
 </style>
 
+</head>
+<body>
 <div class="wrap">
   <header class="top">
     <h1>Вводный тест по дисциплине «Прототипирование»</h1>
@@ -170,3 +178,6 @@ document.getElementById('again').addEventListener('click', () => {
 });
 build();
 </script>
+
+</body>
+</html>
